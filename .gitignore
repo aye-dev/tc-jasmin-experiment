@@ -1,0 +1,5 @@
+packages/
+TCJasmin.Web/bin/
+TCJasmin.Web/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+TCJasmin.Web/obj/
+TCJasmin.Web.Tests/obj/
