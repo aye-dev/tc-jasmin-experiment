@@ -100,7 +100,7 @@ page.onResourceError = function (resourceError) {
 };
 
 
-var runnerPath = system.args[1].replace(/\\/g, "/");;
+var runnerPath = "file:///" + system.args[1].replace(/\\/g, "/");
 page.open(runnerPath, function (status) {
     if (status !== "success") {
         console.log("Failed to open page: " + runnerPath);
