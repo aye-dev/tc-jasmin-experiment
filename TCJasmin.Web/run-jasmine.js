@@ -97,8 +97,8 @@ page.onConsoleMessage = function (msg) {
 
 page.open(system.args[1], function (status) {
     if (status !== "success") {
+        console.log("Opening page with argument: " + system.args[1]);
         console.log("Unable to access network: status=" + status);
-
         phantom.exit(1);
     } else {
         waitFor(function () {
