@@ -14,7 +14,7 @@
  * @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
  */
 function waitFor(testFx, onReady, timeOutMillis) {
-    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3001, //< Default Max Timeout is 3s
+    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 60001, //< Default Max Timeout is 3s
         start = new Date().getTime(),
         condition = false,
         interval = setInterval(function () {
@@ -94,11 +94,9 @@ page.onConsoleMessage = function (msg) {
         return message;
     }
 };
-
 page.onResourceError = function (resourceError) {
     console.error(resourceError.url + ': ' + resourceError.errorString);
 };
-
 
 var runnerPath = "file:///" + system.args[1].replace(/\\/g, "/");
 page.open(runnerPath, function (status) {
@@ -109,32 +107,34 @@ page.open(runnerPath, function (status) {
     } else {
         waitFor(function () {
             return page.evaluate(function () {
-                return document.body.querySelector('.symbolSummary .pending') === null
+                return document.body.querySelector('.jasmine-symbolSummary .jasmine-pending') === null &&
+                    (document.body.querySelector('.jasmine-alert > .jasmine-bar.jasmine-passed') !== null ||
+                     document.body.querySelector('.jasmine-alert > .jasmine-bar.jasmine-failed') !== null);
             });
         }, function () {
             var exitCode = page.evaluate(function () {
                 var currentSuite;
-                var successList = document.body.querySelectorAll('.results > .summary .specs > .passed');
+                var successList = document.body.querySelectorAll('.jasmine-results > .jasmine-summary .jasmine-specs > .jasmine-passed');
                 var suites = {};
                 if (successList && successList.length > 0) {
                     for (var i = 0; i < successList.length; ++i) {
                         var el = successList[i],
                             name = el.children[0].innerText,
-                            suite = el.parentElement.parentElement.querySelector('.suite-detail').innerText;
+                            suite = el.parentElement.parentElement.querySelector('.jasmine-suite-detail').innerText;
 
                         suites[suite] = suites[suite] || [];
                         suites[suite].push({ status: 'success', name: name });
                     }
                 }
 
-                var failedList = document.body.querySelectorAll('.results > .failures > .spec-detail.failed');
+                var failedList = document.body.querySelectorAll('.jasmine-results > .jasmine-failures > .jasmine-spec-detail.jasmine-failed');
                 if (failedList && failedList.length > 0) {
                     console.log('');
                     console.log(failedList.length + ' test(s) FAILED:');
                     for (var i = 0; i < failedList.length; ++i) {
                         var el = failedList[i],
-                            name = el.querySelector('.description').innerText,
-                            msg = el.querySelector('.result-message').innerText,
+                            name = el.querySelector('.jasmine-description').innerText,
+                            msg = el.querySelector('.jasmine-result-message').innerText,
                             suite = name.substring(0, name.indexOf(' '));
 
                         // remove trailing period
@@ -169,7 +169,7 @@ page.open(runnerPath, function (status) {
                 if (failedList && failedList.length > 0) {
                     return 1;
                 } else {
-                    console.log(document.body.querySelector('.alert > .bar.passed').innerText);
+                    console.log(document.body.querySelector('.jasmine-alert > .jasmine-bar.jasmine-passed').innerText);
                     return 0;
                 }
             });
