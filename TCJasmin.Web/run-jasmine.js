@@ -94,6 +94,12 @@ page.onConsoleMessage = function (msg) {
         return message;
     }
 };
+
+page.onResourceError = function (resourceError) {
+    console.error(resourceError.url + ': ' + resourceError.errorString);
+};
+
+
 var runnerPath = system.args[1].replace(/\\/g, "/");;
 page.open(runnerPath, function (status) {
     if (status !== "success") {
