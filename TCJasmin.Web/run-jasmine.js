@@ -94,14 +94,10 @@ page.onConsoleMessage = function (msg) {
         return message;
     }
 };
-
-page.open(system.args[1].replace('\\', '/'), function (status) {
+var runnerPath = system.args[1].replace(/\\/g, "/");;
+page.open(runnerPath, function (status) {
     if (status !== "success") {
-        console.log("Failed to open page: " + system.args[1]);
-        var pa
-        for (var i = 0; i < arguments.length; i++) {
-            
-        }
+        console.log("Failed to open page: " + runnerPath);
         console.log("Unable to access network: status=" + status);
         phantom.exit(1);
     } else {
