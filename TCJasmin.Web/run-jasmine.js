@@ -95,9 +95,13 @@ page.onConsoleMessage = function (msg) {
     }
 };
 
-page.open(system.args[1], function (status) {
+page.open(system.args[1].replace('\\', '/'), function (status) {
     if (status !== "success") {
-        console.log("Opening page with argument: " + system.args[1]);
+        console.log("Failed to open page: " + system.args[1]);
+        var pa
+        for (var i = 0; i < arguments.length; i++) {
+            
+        }
         console.log("Unable to access network: status=" + status);
         phantom.exit(1);
     } else {
